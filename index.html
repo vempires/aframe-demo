@@ -3,28 +3,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A-Frame 3D Scene</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A-Frame Scene Loader</title>
+
   <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+    }
+
+    #status {
+      position: fixed;
+      z-index: 10;
+      top: 10px;
+      left: 10px;
+      padding: 9px 12px;
+      border-radius: 5px;
+      background: #222d;
+      font-size: 13px;
+    }
+
+    a-scene {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-  <a-scene>
-    <a-box position="-1 1 -3"
-           rotation="0 45 0"
-           color="#4CC3D9"></a-box>
 
-    <a-sphere position="1 1.25 -4"
-              radius="1"
-              color="#EF2D5E"></a-sphere>
+  <div id="status">Loading scene...</div>
 
-    <a-plane position="0 0 -4"
-             rotation="-90 0 0"
-             width="8"
-             height="8"
-             color="#7BC8A4"></a-plane>
-
-    <a-sky color="#ECECEC"></a-sky>
+  <a-scene embedded>
+    <a-sky id="sky" color="#202030"></a-sky>
     <a-camera position="0 1.6 0"></a-camera>
+    <a-entity id="objects"></a-entity>
   </a-scene>
+
+  <script>
+    async function loadScene() {
+      const status = document.getElementById("status");
+
+      try {
+        const params = new URLSearchParams(location.search);
+        const id = params.get("id") || "scene1";
+
+        // Load external scene configuration
+        const response = await fetch("./scenes.json");
+
+        if (!response.ok) {
+          throw new Error("Could not load scenes.json");
+        }
+
+        const scenes = await response.json();
+        const scene = scenes[id];
+
+        if (!scene) {
+          throw new Error("Scene ID not found: " + id);
+        }
+
+        // Set page title and background
+        document.title = scene.title;
+        document.getElementById("sky")
+          .setAttribute("color", scene.background || "#202030");
+
+        const container = document.getElementById("objects");
+        container.replaceChildren();
+
+        const allowedTypes = [
+          "a-box",
+          "a-sphere",
+          "a-cylinder",
+          "a-plane",
+          "a-torus"
+        ];
+
+        // Create objects from JSON configuration
+        for (const item of (scene.objects || [])) {
+          if (!allowedTypes.includes(item.type)) continue;
+
+          const element = document.createElement(item.type);
+
+          for (const [key, value] of Object.entries(item)) {
+            if (key !== "type") {
+              element.setAttribute(key, value);
+            }
+          }
+
+          container.appendChild(element);
+        }
+
+        status.textContent = "Loaded: " + scene.title;
+
+        setTimeout(() => {
+          status.style.display = "none";
+        }, 2500);
+
+      } catch (error) {
+        status.textContent = "Error: " + error.message;
+      }
+    }
+
+    window.addEventListener("load", loadScene);
+  </script>
+
 </body>
 </html>
