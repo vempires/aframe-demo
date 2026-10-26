@@ -1,0 +1,63 @@
+
+{
+  "scene1": {
+    "title": "Scene 1 - Cyan Box",
+    "background": "#202030",
+    "objects": [
+      {
+        "type": "a-box",
+        "position": "-1 1 -3",
+        "rotation": "0 45 0",
+        "color": "#00CFE8"
+      },
+      {
+        "type": "a-sphere",
+        "position": "1 1.25 -4",
+        "radius": "1",
+        "color": "#EF2D5E"
+      },
+      {
+        "type": "a-plane",
+        "position": "0 0 -4",
+        "rotation": "-90 0 0",
+        "width": "8",
+        "height": "8",
+        "color": "#555555"
+      }
+    ]
+  },
+  "scene2": {
+    "title": "Scene 2 - Blue World",
+    "background": "#001B55",
+    "objects": [
+      {
+        "type": "a-sphere",
+        "position": "0 1.5 -4",
+        "radius": "1.2",
+        "color": "#0066FF"
+      },
+      {
+        "type": "a-box",
+        "position": "2 1 -5",
+        "rotation": "0 30 0",
+        "color": "#FFD700"
+      }
+    ]
+  },
+  "match1": {
+    "title": "Match 1",
+    "background": "#063820",
+    "objects": [
+      {
+        "type": "a-box",
+        "position": "-1 1 -3",
+        "color": "#FF3333"
+      },
+      {
+        "type": "a-box",
+        "position": "1 1 -3",
+        "color": "#FFFFFF"
+      }
+    ]
+  }
+}
